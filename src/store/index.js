@@ -35,6 +35,13 @@ export default new Vuex.Store({
 
     cartTotal(state, getters){
       return getters.cartProducts.reduce((total, product) => total + product.price * product.quantity, 0)
+    },
+
+    productIsInStock(){ // We cannot pass argument to the getter methods instead we can return the function
+    //  that will accept the argument
+      return (product) => {
+        return product.inventory > 0
+      }
     }
   },
 
@@ -50,7 +57,7 @@ export default new Vuex.Store({
     },
 
     addProductToCart(context, product){
-      if(product.inventory > 0){
+      if(context.getters.productIsInStock(product)){
         const cartItem = context.state.cart.find(item => item.id === product.id)
 
         if(!cartItem){
